@@ -1,14 +1,19 @@
 {
   "dependencies": {
     "com.code-philosophy.hybridclr": "https://gitee.com/focus-creative-games/hybridclr_unity.git",
-    "com.unity.ide.rider": "3.0.18",
-    "com.unity.ide.visualstudio": "2.0.17",
+    "com.unity.ide.rider": "3.0.31",
+    "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.ide.vscode": "1.2.5",
-    "com.unity.nuget.newtonsoft-json": "3.1.0",
-    "com.unity.render-pipelines.universal": "12.1.11",
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.render-pipelines.universal": "12.1.15",
     "com.unity.scriptablebuildpipeline": "1.20.2",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.ugui": "1.0.0",
+    "com.vovgou.loxodon-framework": "2.6.6",
+    "com.vovgou.loxodon-framework-fody": "2.6.6",
+    "com.vovgou.loxodon-framework-fody-bindingproxy": "2.6.6",
+    "com.vovgou.loxodon-framework-fody-propertychanged": "2.6.6",
+    "com.vovgou.loxodon-framework-fody-tostring": "2.6.6",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -47,7 +52,8 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.cysharp.unitask",
-        "com.tuyoogame.yooasset"
+        "com.tuyoogame.yooasset",
+        "com.vovgou"
       ]
     }
   ]
