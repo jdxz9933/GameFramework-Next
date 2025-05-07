@@ -30,58 +30,23 @@ MonoBehaviour:
     referenceMode: 2
     serializationDepthLimit: 64
     assemblyNames:
-    - AdvancedInputField
-    - AppleAuth
     - Assembly-CSharp
-    - Assembly-CSharp-firstpass
-    - BestHTTP
-    - Crosstales
-    - CW.Common
-    - DOTween.Modules
-    - DOTweenPro.Scripts
-    - DressUpWorkFlow
     - EasySave3
-    - EZ.Editor
-    - EZ.Runtime
-    - Game.Builtin
-    - Game.HotUpdate
-    - GameAnalyticsSDK
-    - GameFramework
-    - Google.Play.Games
-    - GoogleLoginSDK
+    - GameBase
+    - GameLogic
+    - GameMain.Runtime
+    - GameProto
     - HybridCLR.Runtime
-    - LeanCommon
-    - LeanTouch
-    - MaxSdk.Scripts
-    - NativeDevice
-    - NativeDialog.Runtime
-    - NativeGallery.Runtime
-    - Newtonsoft.Json.UnityConverters
-    - OSA.Core
-    - PathCreator
-    - Purchasing.Common
-    - spine-unity
-    - UIEffect
-    - UltimateJoystick
-    - UniRx
-    - UniRx.Examples
+    - Loxodon.Framework
+    - Loxodon.Framework.Binding.Weaving
+    - Loxodon.Log
     - UniTask
     - UniTask.Addressables
     - UniTask.DOTween
     - UniTask.Linq
     - UniTask.TextMeshPro
-    - unity.webp
-    - UnityGameFramework.Extension
     - UnityGameFramework.Runtime
-    - VoxelBusters.CoreLibrary
-    - VoxelBusters.CoreLibrary.NativePlugins
-    - VoxelBusters.CoreLibrary.NativePlugins.AndroidModule
-    - VoxelBusters.CoreLibrary.NativePlugins.iOSModule
-    - VoxelBusters.CoreLibrary.Parser
-    - VoxelBusters.EssentialKit
-    - VoxelBusters.EssentialKit.AndroidModule
-    - VoxelBusters.EssentialKit.Demo
-    - VoxelBusters.EssentialKit.iOSModule
+    - YooAsset
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1

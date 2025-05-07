@@ -154,11 +154,10 @@
       }
     },
     "com.vovgou.loxodon-framework": {
-      "version": "2.6.6",
+      "version": "file:com.vovgou.loxodon-framework",
       "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.vovgou.loxodon-framework-fody": {
       "version": "2.6.6",
