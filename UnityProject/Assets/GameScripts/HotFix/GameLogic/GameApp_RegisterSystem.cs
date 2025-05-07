@@ -1,12 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using GameBase;
 using GameLogic;
 using GameFramework;
+using GameMain;
+using Loxodon.Framework.Binding;
+using Loxodon.Framework.Contexts;
+using Loxodon.Framework.Examples;
+using Loxodon.Framework.Localizations;
+using Loxodon.Framework.Messaging;
+using Loxodon.Framework.Services;
+using Loxodon.Framework.Views;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 
 public partial class GameApp
 {
     private List<ILogicSys> m_ListLogicMgr;
+
+    ISubscription<WindowStateEventArgs> subscription;
+
+    private ApplicationContext context;
 
     private void InitSystem()
     {
@@ -15,6 +29,49 @@ public partial class GameApp
         EventInterfaceHelper.Init();
         RegisterAllSystem();
         InitSystemSetting();
+
+        //GlobalWindowManager
+
+        UILoadMgr.UIRoot.gameObject.GetOrAddComponent<GlobalWindowManager>();
+        context = Context.GetApplicationContext();
+
+        IServiceContainer container = context.GetContainer();
+
+        /* Initialize the data binding service */
+        BindingServiceBundle bundle = new BindingServiceBundle(context.GetContainer());
+        bundle.Start();
+
+        /* Initialize the ui view locator and register UIViewLocator */
+        container.Register<IUIViewLocator>(new ResourcesViewLocator());
+
+        /* Initialize the localization service */
+        //CultureInfo cultureInfo = Locale.GetCultureInfoByLanguage (SystemLanguage.English);
+        CultureInfo cultureInfo = Locale.GetCultureInfo();
+        var localization = Localization.Current;
+        localization.CultureInfo = cultureInfo;
+        localization.AddDataProvider(new ResourcesDataProvider("LocalizationExamples", new XmlDocumentParser()));
+
+        /* register Localization */
+        container.Register<Localization>(localization);
+
+        /* register AccountRepository */
+        IAccountRepository accountRepository = new AccountRepository();
+        container.Register<IAccountService>(new AccountService(accountRepository));
+
+
+        /* Enable window state broadcast */
+        GlobalSetting.enableWindowStateBroadcast = true;
+        /*
+         * Use the CanvasGroup.blocksRaycasts instead of the CanvasGroup.interactable
+         * to control the interactivity of the view
+         */
+        GlobalSetting.useBlocksRaycastsInsteadOfInteractable = true;
+
+        /* Subscribe to window state change events */
+        subscription = Window.Messenger.Subscribe<WindowStateEventArgs>(e =>
+        {
+            Debug.LogFormat("The window[{0}] state changed from {1} to {2}", e.Window.Name, e.OldState, e.State);
+        });
     }
 
     /// <summary>
@@ -29,7 +86,6 @@ public partial class GameApp
     /// </summary>
     private void RegisterAllSystem()
     {
-        
     }
 
     /// <summary>

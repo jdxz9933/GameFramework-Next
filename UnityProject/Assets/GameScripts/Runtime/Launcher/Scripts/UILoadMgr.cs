@@ -9,6 +9,7 @@ namespace GameMain
     /// </summary>
     public static class UILoadMgr
     {
+        public static Transform UIRoot => _uiRoot;
         private static Transform _uiRoot;
         private static readonly Dictionary<string, string> _uiList = new Dictionary<string, string>();
         private static readonly Dictionary<string, UIBase> _uiMap = new Dictionary<string, UIBase>();

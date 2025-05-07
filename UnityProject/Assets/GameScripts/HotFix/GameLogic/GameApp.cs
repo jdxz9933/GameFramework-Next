@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using GameLogic;
 using GameFramework;
+using Loxodon.Framework.Examples;
+using Loxodon.Framework.Views;
 using UnityGameFramework.Runtime;
 
 public partial class GameApp: Singleton<GameApp>
@@ -34,7 +36,16 @@ public partial class GameApp: Singleton<GameApp>
     /// </summary>
     private void StartGameLogic()
     {
+        /* Create a window container */
+        WindowContainer winContainer = WindowContainer.Create("MAIN");
         
+        IUIViewLocator locator = context.GetService<IUIViewLocator>();
+        StartupWindow window = locator.LoadWindow<StartupWindow>(winContainer, "UI/Startup/Startup");
+        window.Create();
+        ITransition transition = window.Show().OnStateChanged((w, state) =>
+        {
+            //log.DebugFormat("Window:{0} State{1}",w.Name,state);
+        });
     }
 
     /// <summary>
