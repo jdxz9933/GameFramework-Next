@@ -40,7 +40,7 @@ public partial class GameApp: Singleton<GameApp>
         WindowContainer winContainer = WindowContainer.Create("MAIN");
         
         IUIViewLocator locator = context.GetService<IUIViewLocator>();
-        StartupWindow window = locator.LoadWindow<StartupWindow>(winContainer, "UI/Startup/Startup");
+        StartupWindow window = locator.LoadWindow<StartupWindow>(winContainer, "Assets/AssetRaw/UI/UIForms/Startup/Startup.prefab");
         window.Create();
         ITransition transition = window.Show().OnStateChanged((w, state) =>
         {

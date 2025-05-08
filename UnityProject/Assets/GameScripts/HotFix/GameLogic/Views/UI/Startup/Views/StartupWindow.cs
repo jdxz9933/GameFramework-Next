@@ -55,7 +55,7 @@ namespace Loxodon.Framework.Examples
         protected override void OnCreate(IBundle bundle)
         {
             this.viewLocator = Context.GetApplicationContext().GetService<IUIViewLocator>();
-            this.loginWindowInteractionAction = new AsyncWindowInteractionAction("UI/Logins/Login", viewLocator, this.WindowManager);
+            this.loginWindowInteractionAction = new AsyncWindowInteractionAction("Login", viewLocator, this.WindowManager);
             this.sceneInteractionAction = new AsynSceneInteractionAction("Prefabs/Cube");
             this.viewModel = new StartupViewModel();
 

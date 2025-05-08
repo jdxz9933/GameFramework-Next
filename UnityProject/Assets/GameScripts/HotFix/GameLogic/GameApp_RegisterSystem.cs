@@ -42,7 +42,7 @@ public partial class GameApp
         bundle.Start();
 
         /* Initialize the ui view locator and register UIViewLocator */
-        container.Register<IUIViewLocator>(new ResourcesViewLocator());
+        container.Register<IUIViewLocator>(new UIViewLocator());
 
         /* Initialize the localization service */
         //CultureInfo cultureInfo = Locale.GetCultureInfoByLanguage (SystemLanguage.English);
