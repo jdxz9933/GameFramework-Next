@@ -131,6 +131,8 @@ public class UIButtonSuper : Button, IBeginDragHandler, IDragHandler, IEndDragHa
 
     void Update()
     {
+        if (!IsInteractable())
+            return;
         if (isDown)
         {
             if (!m_CanLongPress)
@@ -257,18 +259,24 @@ public class UIButtonSuper : Button, IBeginDragHandler, IDragHandler, IEndDragHa
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
-        PlayButtonSound(ButtonSoundType.Enter);
+        if (IsInteractable())
+        {
+            PlayButtonSound(ButtonSoundType.Enter);
+        }
     }
 
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
         if (eventData.pointerId < -1 || IsDraging) return; //适配 Touch：只响应一个Touch；适配鼠标：只响应左键
-        fingerId = eventData.pointerId;
-        isDown = true;
-        isDownExit = false;
-        downTime = 0;
-        PlayButtonSound(ButtonSoundType.Down);
+        if (IsInteractable())
+        {
+            fingerId = eventData.pointerId;
+            isDown = true;
+            isDownExit = false;
+            downTime = 0;
+            PlayButtonSound(ButtonSoundType.Down);
+        }
     }
 
     public override void OnPointerUp(PointerEventData eventData)
@@ -292,14 +300,17 @@ public class UIButtonSuper : Button, IBeginDragHandler, IDragHandler, IEndDragHa
 
     public override void OnPointerClick(PointerEventData eventData)
     {
-        if (!isPress)
+        if (IsInteractable())
         {
-            clickTimes += 1;
-        }
-        else
-            isPress = false;
+            if (!isPress)
+            {
+                clickTimes += 1;
+            }
+            else
+                isPress = false;
 
-        PlayButtonSound(ButtonSoundType.Click);
+            PlayButtonSound(ButtonSoundType.Click);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
