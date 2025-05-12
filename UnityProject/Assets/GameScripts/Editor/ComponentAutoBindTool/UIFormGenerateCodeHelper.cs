@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Game.HotUpdate;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
-{
+public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper {
     public override string DirectoryPath => "Form";
 
-    public override void CreateBingCode(ComponentAutoBindTool autoBindTool, string filePath, string className)
-    {
-        using (StreamWriter sw = new StreamWriter(filePath))
-        {
+    public override void CreateBingCode(ComponentAutoBindTool autoBindTool, string filePath, string className) {
+        using (StreamWriter sw = new StreamWriter(filePath)) {
             //sw.WriteLine("using System.Collections;");
             //sw.WriteLine("using System.Collections.Generic;");
 
@@ -28,8 +26,7 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
             sw.WriteLine("\tpublic partial class " + className + "\n\t{");
 
             //组件字段
-            foreach (ComponentAutoBindTool.BindData data in autoBindTool.BindDatas)
-            {
+            foreach (ComponentAutoBindTool.BindData data in autoBindTool.BindDatas) {
                 sw.WriteLine($"\t\tprivate {data.BindCom.GetType().Name} m_{data.Name};");
             }
 
@@ -39,8 +36,7 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
             sw.WriteLine($"\t\t\tComponentAutoBindTool autoBindTool = go.GetComponent<ComponentAutoBindTool>();\n");
 
             //根据索引获取
-            for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-            {
+            for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
                 ComponentAutoBindTool.BindData data = autoBindTool.BindDatas[i];
                 string filedName = $"m_{data.Name}";
                 sw.WriteLine($"\t\t\t{filedName} = autoBindTool.GetBindComponent<{data.BindCom.GetType().Name}>({i});");
@@ -51,8 +47,7 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
         }
     }
 
-    public override string GenAutoBindMountCode(ComponentAutoBindTool autoBindTool, string className, string codePath)
-    {
+    public override string GenAutoBindMountCode(ComponentAutoBindTool autoBindTool, string className, string codePath) {
         string btnStart =
             "/*--------------------Auto generate start button listener.Do not modify!--------------------*/";
         string btnEnd =
@@ -62,21 +57,17 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
         string scriptEndK = "\t}\n}";
         Dictionary<string, string> clickFuncDict = new Dictionary<string, string>();
         Dictionary<string, string> inputFuncDict = new Dictionary<string, string>();
-        for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-        {
+        for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
             if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(UIButtonSuper))
                 clickFuncDict[$"m_{autoBindTool.BindDatas[i].Name}"] = $"{autoBindTool.BindDatas[i].Name}Event";
             else if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(InputField))
                 inputFuncDict[$"m_{autoBindTool.BindDatas[i].Name}"] = $"{autoBindTool.BindDatas[i].Name}EndEditEvent";
             //sw.WriteLine($"\t\t\t m_{m_Target.BindDatas[i].Name}.onClick.AddListener({m_Target.BindDatas[i].Name}Event);");
         }
-
         string filePath = $"{codePath}/{className}.cs";
         //string filePath = $"{codePath}/{className}.txt";
-        if (!File.Exists(filePath))
-        {
-            using (StreamWriter sw = new StreamWriter(filePath))
-            {
+        if (!File.Exists(filePath)) {
+            using (StreamWriter sw = new StreamWriter(filePath)) {
                 sw.WriteLine(GetFileHead());
 
                 sw.WriteLine("using Game.Builtin;");
@@ -98,16 +89,12 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
                 sw.WriteLine(
                     "\t\tprotected override void OnInit(object userData) {\n\t\t\t base.OnInit(userData);\n\t\t\t GetBindComponents(gameObject);\n"); //   OnInit
                 sw.WriteLine(btnStart);
-                foreach (var clickFunc in clickFuncDict)
-                {
+                foreach (var clickFunc in clickFuncDict) {
                     sw.WriteLine($"\t\t\t{clickFunc.Key}.onClick.AddListener({clickFunc.Value});");
                 }
-
-                foreach (var inputFunc in inputFuncDict)
-                {
+                foreach (var inputFunc in inputFuncDict) {
                     sw.WriteLine($"\t\t\t{inputFunc.Key}.onEndEdit.AddListener({inputFunc.Value});");
                 }
-
                 sw.WriteLine(btnEnd);
                 sw.WriteLine("\t\t}\n");
 
@@ -115,10 +102,8 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
 
                 #region ButtonEvent
 
-                for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-                {
-                    if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(UIButtonSuper))
-                    {
+                for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
+                    if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(UIButtonSuper)) {
                         sw.WriteLine("\t\tprivate void " + autoBindTool.BindDatas[i].Name + "Event()" + "{}");
                     }
                 }
@@ -127,10 +112,8 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
 
                 #region InputEvent
 
-                for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-                {
-                    if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(InputField))
-                    {
+                for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
+                    if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(InputField)) {
                         sw.WriteLine("\t\tprivate void " +
                                      autoBindTool.BindDatas[i].Name +
                                      "EndEditEvent(string arg0)" +
@@ -144,93 +127,66 @@ public class UIFormGenerateCodeHelper : AutoGenerateCodeHelper
                 sw.WriteLine(scriptEndK);
                 sw.Close();
             }
-        }
-        else
-        {
+        } else {
             bool stopWrite = false;
             bool writeNewOver = false;
             string[] strArr = File.ReadAllLines(filePath);
             List<string> strList = new List<string>();
-            for (int i = 0; i < strArr.Length; i++)
-            {
+            for (int i = 0; i < strArr.Length; i++) {
                 string str = strArr[i];
-                if (str.Trim().Equals(scriptEnd))
-                {
+                if (str.Trim().Equals(scriptEnd)) {
                     break;
                 }
-
-                if (str.Trim().Equals(btnStart))
-                {
+                if (str.Trim().Equals(btnStart)) {
                     strList.Add(btnStart);
                     stopWrite = true;
                 }
 
-                if (!stopWrite)
-                {
+                if (!stopWrite) {
                     strList.Add(str);
-                }
-                else
-                {
-                    if (!writeNewOver)
-                    {
-                        foreach (var clickFunc in clickFuncDict)
-                        {
+                } else {
+                    if (!writeNewOver) {
+                        foreach (var clickFunc in clickFuncDict) {
                             strList.Add($"\t\t\t {clickFunc.Key}.onClick.AddListener({clickFunc.Value});");
                         }
-
-                        foreach (var inputFunc in inputFuncDict)
-                        {
+                        foreach (var inputFunc in inputFuncDict) {
                             strList.Add($"\t\t\t{inputFunc.Key}.onEndEdit.AddListener({inputFunc.Value});");
                         }
-
                         //writeNew
                         writeNewOver = true;
                     }
                 }
-
-                if (str.Trim().Equals(btnEnd))
-                {
+                if (str.Trim().Equals(btnEnd)) {
                     strList.Add(btnEnd);
                     stopWrite = false;
                 }
             }
-
-            foreach (KeyValuePair<string, string> pair in clickFuncDict)
-            {
+            foreach (KeyValuePair<string, string> pair in clickFuncDict) {
                 bool contain = false;
-                for (int kIndex = 0; kIndex < strList.Count; kIndex++)
-                {
+                for (int kIndex = 0; kIndex < strList.Count; kIndex++) {
                     string str = strList[kIndex];
 
-                    if (str.Contains($"{pair.Value}()"))
-                    {
+                    if (str.Contains($"{pair.Value}()")) {
                         contain = true;
                         break;
                     }
                 }
-
-                if (!contain)
-                {
+                if (!contain) {
                     strList.Add($"\t\tprivate void {pair.Value}()" + "{}");
                 }
             }
 
-            foreach (KeyValuePair<string, string> pair in inputFuncDict)
-            {
+            foreach (KeyValuePair<string, string> pair in inputFuncDict) {
                 bool contain = false;
-                for (int kIndex = 0; kIndex < strList.Count; kIndex++)
-                {
+                for (int kIndex = 0; kIndex < strList.Count; kIndex++) {
                     string str = strList[kIndex];
 
-                    if (str.Contains($"{pair.Value}(string arg0)"))
-                    {
+                    if (str.Contains($"{pair.Value}(string arg0)")) {
                         contain = true;
                         break;
                     }
                 }
-
-                if (!contain)
-                {
+                if (!contain) {
                     strList.Add($"\t\tprivate void {pair.Value}(string arg0)" + "{}");
                 }
             }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Game.HotUpdate;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Game.HotUpdate;
 using Loxodon.Framework.Commands;
 using Loxodon.Framework.Interactivity;
 using Sirenix.Utilities;
@@ -11,66 +12,56 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
 
-public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
-{
+public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper {
     public override string DirectoryPath => "Form";
 
-    private Type GetClassType(ComponentAutoBindTool autoBindTool, string className)
-    {
+    private Type GetClassType(ComponentAutoBindTool autoBindTool, string className) {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         Type targetType = assemblies
             .SelectMany(a => a.GetTypes())
             .FirstOrDefault(t => t.Namespace == autoBindTool.Namespace && t.Name == className);
 
-        if (targetType == null)
-        {
+        if (targetType == null) {
             Debug.LogError($"找不到类型: {autoBindTool.Namespace}.{className}");
         }
 
         return targetType;
     }
 
-    private List<FieldInfo> GetClassFields(ComponentAutoBindTool autoBindTool, string className)
-    {
+    private List<FieldInfo> GetClassFields(ComponentAutoBindTool autoBindTool, string className) {
         List<FieldInfo> fileInfos = new List<FieldInfo>();
         Type targetType = GetClassType(autoBindTool, className);
-        if (targetType == null)
-        {
+        if (targetType == null) {
             Debug.LogError($"找不到类型: {autoBindTool.Namespace}.{className}");
             return fileInfos;
         }
 
-        FieldInfo[] fields = targetType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
-        if (fields.Length > 0)
-        {
-            for (int i = 0; i < fields.Length; i++)
-            {
-                var field = fields[i];
-                //如果字段是有AutoBindAttribute特性的
-                // if (field.GetCustomAttribute<AutoBindAttribute>() != null)
-                // {
-                //     fileInfos.Add(field);
-                // }
-            }
-        }
+        // FieldInfo[] fields = targetType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+        // if (fields.Length > 0)
+        // {
+        //     for (int i = 0; i < fields.Length; i++)
+        //     {
+        //         var field = fields[i];
+        //         //如果字段是有AutoBindAttribute特性的
+        //         if (field.GetCustomAttribute<AutoBindAttribute>() != null)
+        //         {
+        //             fileInfos.Add(field);
+        //         }
+        //     }
+        // }
 
         return fileInfos;
     }
 
-    public override void CreateViewModelImpCode(ComponentAutoBindTool autoBindTool, string filePath, string className)
-    {
+    public override void CreateViewModelImpCode(ComponentAutoBindTool autoBindTool, string filePath, string className) {
         List<FieldInfo> fileInfos = GetClassFields(autoBindTool, className);
-        if (fileInfos.Count > 0)
-        {
-            using (StreamWriter sw = new StreamWriter(filePath))
-            {
+        if (fileInfos.Count > 0) {
+            using (StreamWriter sw = new StreamWriter(filePath)) {
                 usingSameStr.Clear();
-                for (int i = 0; i < fileInfos.Count; i++)
-                {
+                for (int i = 0; i < fileInfos.Count; i++) {
                     var field = fileInfos[i];
                     var name = field.FieldType.Namespace;
-                    if (usingSameStr.Contains(name))
-                    {
+                    if (usingSameStr.Contains(name)) {
                         continue;
                     }
 
@@ -84,8 +75,7 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
                     sw.WriteLine("\nnamespace PleaseAmendNamespace\n{");
 
                 sw.WriteLine("\tpublic partial class " + className + "\n\t{");
-                for (int i = 0; i < fileInfos.Count; i++)
-                {
+                for (int i = 0; i < fileInfos.Count; i++) {
                     var field = fileInfos[i];
                     CreateViewModelPropertyCode(sw, field);
                 }
@@ -98,21 +88,14 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
         // AutoViewModelCode(autoBindTool, filePath, claseStr);
     }
 
-    public void CreateViewModelPropertyCode(StreamWriter sw, FieldInfo fieldInfo)
-    {
+    public void CreateViewModelPropertyCode(StreamWriter sw, FieldInfo fieldInfo) {
         var fieldType = fieldInfo.FieldType;
         var fieldName = fieldInfo.Name;
         var fieldNameUpper = fieldInfo.GetNiceName();
         //如果是继承ICommand接口的
-        if (typeof(ICommand).IsAssignableFrom(fieldType))
-        {
+        if (typeof(ICommand).IsAssignableFrom(fieldType)) {
             sw.WriteLine($"\t\tpublic ICommand {fieldNameUpper} => {fieldName};");
-        }
-        else if (fieldType == typeof(IInteractionRequest))
-        {
-        }
-        else
-        {
+        } else if (fieldType == typeof(IInteractionRequest)) { } else {
             // sw.WriteLine($"\t\tprivate {fieldType} m_{fieldNameUpper};");
             sw.WriteLine($"\t\tpublic {fieldType} {fieldNameUpper}{{");
             sw.WriteLine($"\t\t\tget => {fieldName};");
@@ -121,10 +104,8 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
         }
     }
 
-    public override void CreateBingCode(ComponentAutoBindTool autoBindTool, string filePath, string className)
-    {
-        using (StreamWriter sw = new StreamWriter(filePath))
-        {
+    public override void CreateBingCode(ComponentAutoBindTool autoBindTool, string filePath, string className) {
+        using (StreamWriter sw = new StreamWriter(filePath)) {
             //sw.WriteLine("using System.Collections;");
             //sw.WriteLine("using System.Collections.Generic;");
 
@@ -141,8 +122,7 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
             sw.WriteLine("\tpublic partial class " + className + "\n\t{");
 
             //组件字段
-            foreach (ComponentAutoBindTool.BindData data in autoBindTool.BindDatas)
-            {
+            foreach (ComponentAutoBindTool.BindData data in autoBindTool.BindDatas) {
                 sw.WriteLine($"\t\tprivate {data.BindCom.GetType().Name} m_{data.Name};");
             }
 
@@ -152,8 +132,7 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
             sw.WriteLine($"\t\t\tComponentAutoBindTool autoBindTool = go.GetComponent<ComponentAutoBindTool>();\n");
 
             //根据索引获取
-            for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-            {
+            for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
                 ComponentAutoBindTool.BindData data = autoBindTool.BindDatas[i];
                 string filedName = $"m_{data.Name}";
                 sw.WriteLine($"\t\t\t{filedName} = autoBindTool.GetBindComponent<{data.BindCom.GetType().Name}>({i});");
@@ -164,10 +143,9 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
         }
     }
 
-    public override string GenAutoBindMountCode(ComponentAutoBindTool autoBindTool, string className, string codePath)
-    {
-        var VMClass = className.Replace("Form", "ViewModel");
-
+    public override string GenAutoBindMountCode(ComponentAutoBindTool autoBindTool, string className, string codePath) {
+        // var VMClass = className.Replace("Form", "ViewModel");
+        var VMClass = autoBindTool.ViewModelName;
         var vmType = GetClassType(autoBindTool, VMClass);
 
         string btnStart =
@@ -183,16 +161,14 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
         Dictionary<string, ComponentAutoBindTool.BindData> bindDataDict =
             new Dictionary<string, ComponentAutoBindTool.BindData>();
 
-        for (int i = 0; i < autoBindTool.BindDatas.Count; i++)
-        {
+        for (int i = 0; i < autoBindTool.BindDatas.Count; i++) {
             if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(UIButtonSuper))
                 clickFuncDict[$"m_{autoBindTool.BindDatas[i].Name}"] = $"{autoBindTool.BindDatas[i].Name}Event";
             else if (autoBindTool.BindDatas[i].BindCom.GetType() == typeof(InputField))
                 inputFuncDict[$"m_{autoBindTool.BindDatas[i].Name}"] = $"{autoBindTool.BindDatas[i].Name}EndEditEvent";
 
             var bindData = autoBindTool.BindDatas[i];
-            if (!string.IsNullOrEmpty(bindData.FieldInfoName))
-            {
+            if (!string.IsNullOrEmpty(bindData.PropertyInfoName)) {
                 bindDataDict.Add(bindData.Name, bindData);
             }
 
@@ -201,10 +177,8 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
 
         string filePath = $"{codePath}/{className}.cs";
         //string filePath = $"{codePath}/{className}.txt";
-        if (!File.Exists(filePath))
-        {
-            using (StreamWriter sw = new StreamWriter(filePath))
-            {
+        if (!File.Exists(filePath)) {
+            using (StreamWriter sw = new StreamWriter(filePath)) {
                 sw.WriteLine(GetFileHead());
 
                 sw.WriteLine("using Game.Builtin;");
@@ -220,7 +194,7 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
                     sw.WriteLine("\nnamespace PleaseAmendNamespace\n{");
 
                 sw.WriteLine($"\t/// <summary>\n\t/// Please modify the description.\n\t/// </summary>");
-                sw.WriteLine("\tpublic partial class " + className + " : UIFixBaseForm\n\t{");
+                sw.WriteLine("\tpublic partial class " + className + " : UGuiPanel\n\t{");
 
                 #region OnInit
 
@@ -243,17 +217,18 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
                 sw.WriteLine(
                     "\t\tprotected override void OnBindingSet(object userData) {\n\t\t\t base.OnBindingSet(userData);\n\t\t\t "); //   OnBindingSet
                 var viewModelClass = className.Replace("Form", "ViewModel");
-                sw.WriteLine($"\t\t\tvar viewModel = userData as {viewModelClass};");
+
+                var viewModelClassName = autoBindTool.ViewModelName;
+
+                sw.WriteLine($"\t\t\tvar viewModel = userData as {viewModelClassName};");
                 sw.WriteLine($"\t\t\tif (viewModel == null) return;");
                 sw.WriteLine($"\t\t\tvar bindingSet = this.CreateBindingSet(viewModel);");
-                sw.WriteLine($"\t\t\tbindingSet.Bind().For(v => v.closeUIAction).To(vm => vm.CloseRequest);");
+                sw.WriteLine($"\t\t\tbindingSet.Bind().For(v => v.OnCloseRequest).To(vm => vm.CloseRequest);");
                 sw.WriteLine(btnStart);
                 if (vmType != null)
-                    foreach (var bindData in bindDataDict)
-                    {
+                    foreach (var bindData in bindDataDict) {
                         var code = ConvertBindData(bindData.Value, vmType);
-                        if (!string.IsNullOrEmpty(code))
-                        {
+                        if (!string.IsNullOrEmpty(code)) {
                             sw.WriteLine(code);
                         }
                     }
@@ -291,48 +266,36 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
                 sw.WriteLine(scriptEndK);
                 sw.Close();
             }
-        }
-        else
-        {
+        } else {
             bool stopWrite = false;
             bool writeNewOver = false;
             string[] strArr = File.ReadAllLines(filePath);
             List<string> strList = new List<string>();
-            for (int i = 0; i < strArr.Length; i++)
-            {
+            for (int i = 0; i < strArr.Length; i++) {
                 string str = strArr[i];
-                if (str.Trim().Equals(scriptEnd))
-                {
+                if (str.Trim().Equals(scriptEnd)) {
                     break;
                 }
 
-                if (str.Trim().Equals(btnStart))
-                {
+                if (str.Trim().Equals(btnStart)) {
                     strList.Add(btnStart);
                     stopWrite = true;
                 }
 
-                if (!stopWrite)
-                {
+                if (!stopWrite) {
                     strList.Add(str);
-                }
-                else
-                {
-                    if (!writeNewOver)
-                    {
+                } else {
+                    if (!writeNewOver) {
                         // foreach (var clickFunc in clickFuncDict) {
                         //     strList.Add($"\t\t\t {clickFunc.Key}.onClick.AddListener({clickFunc.Value});");
                         // }
                         // foreach (var inputFunc in inputFuncDict) {
                         //     strList.Add($"\t\t\t{inputFunc.Key}.onEndEdit.AddListener({inputFunc.Value});");
                         // }
-                        if (vmType != null)
-                        {
-                            foreach (var bindData in bindDataDict)
-                            {
+                        if (vmType != null) {
+                            foreach (var bindData in bindDataDict) {
                                 var code = ConvertBindData(bindData.Value, vmType);
-                                if (!string.IsNullOrEmpty(code))
-                                {
+                                if (!string.IsNullOrEmpty(code)) {
                                     strList.Add(code);
                                 }
                             }
@@ -343,8 +306,7 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
                     }
                 }
 
-                if (str.Trim().Equals(btnEnd))
-                {
+                if (str.Trim().Equals(btnEnd)) {
                     strList.Add(btnEnd);
                     stopWrite = false;
                 }
@@ -388,24 +350,21 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
         return filePath;
     }
 
-    public string ConvertBindData(ComponentAutoBindTool.BindData bindData, Type viewModelType)
-    {
-        var fieldInfo = viewModelType.GetField(bindData.FieldInfoName, BindingFlags.NonPublic | BindingFlags.Instance);
-        if (fieldInfo == null)
-        {
-            Debug.LogError("ViewModel中找不到字段 " + bindData.FieldInfoName);
+    public string ConvertBindData(ComponentAutoBindTool.BindData bindData, Type viewModelType) {
+        var fieldInfo = viewModelType.GetProperty(bindData.PropertyInfoName, BindingFlags.Public | BindingFlags.Instance);
+        if (fieldInfo == null) {
+            Debug.LogError("ViewModel中找不到字段 " + bindData.PropertyInfoName);
             return "";
         }
 
-        switch (bindData.BindCom.GetType())
-        {
+        switch (bindData.BindCom.GetType()) {
             case { } type when type == typeof(UIButtonSuper):
-                if (typeof(ICommand).IsAssignableFrom(fieldInfo.FieldType))
+                if (typeof(ICommand).IsAssignableFrom(fieldInfo.PropertyType))
                     return
-                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.onClick).To(vm => vm.{fieldInfo.GetNiceName()}).OneWay();";
-                if (fieldInfo.FieldType == typeof(bool))
+                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.onClick).To(vm => vm.{fieldInfo.Name}).OneWay();";
+                if (fieldInfo.PropertyType == typeof(bool))
                     return
-                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.isOn).To(vm => vm.{fieldInfo.GetNiceName()}).OneWay();";
+                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.isOn).To(vm => vm.{fieldInfo.Name}).OneWay();";
                 break;
             // case { } type when type == typeof(AdvancedInputField):
             //     if (fieldInfo.FieldType == typeof(string)) {
@@ -413,57 +372,49 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper
             //     }
             //     break;
             case { } type when type == typeof(Text):
-                if (fieldInfo.FieldType == typeof(string))
-                {
+                if (fieldInfo.PropertyType == typeof(string)) {
                     return
-                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.text).To(vm => vm.{fieldInfo.GetNiceName()}).TwoWay();";
+                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.text).To(vm => vm.{fieldInfo.Name}).TwoWay();";
                 }
 
                 break;
-            // case { } type1 when type1 == typeof(UXText):
-            //     if (fieldInfo.FieldType == typeof(string))
-            //     {
-            //         return
-            //             $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.text).To(vm => vm.{fieldInfo.GetNiceName()}).TwoWay();";
-            //     }
-            //
-            //     break;
-            case { } type when type == typeof(RectTransform):
-                if (fieldInfo.FieldType == typeof(bool))
-                {
+            case { } type1 when type1 == typeof(UXText):
+                if (fieldInfo.PropertyType == typeof(string)) {
                     return
-                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}.gameObject).For(v => v.activeSelf).To(vm => vm.{fieldInfo.GetNiceName()}).OneWay();";
+                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.Text).To(vm => vm.{fieldInfo.Name}).TwoWay();";
+                }
+
+                break;
+            case { } type when type == typeof(RectTransform):
+                if (fieldInfo.PropertyType == typeof(bool)) {
+                    return
+                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}.gameObject).For(v => v.activeSelf).To(vm => vm.{fieldInfo.Name}).OneWay();";
                 }
 
                 break;
         }
 
-        Debug.LogError("请检查ViewModel中的字段类型是否正确 " + bindData.FieldInfoName);
+        Debug.LogError("请检查ViewModel中的字段类型是否正确 " + bindData.PropertyInfoName);
         return "";
     }
 
-    private void BindingSet(ComponentAutoBindTool autoBindTool, FieldInfo fieldInfo, List<string> strList)
-    {
+    private void BindingSet(ComponentAutoBindTool autoBindTool, FieldInfo fieldInfo, List<string> strList) {
         // var autoAttribute = fieldInfo.GetAttribute<AutoBindAttribute>();
     }
 
-    public string ToUpperFormat(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
+    public string ToUpperFormat(string input) {
+        if (string.IsNullOrEmpty(input)) {
             return input;
         }
 
         //检查第一个字符是否为下划线
-        if (input[0] == '_')
-        {
+        if (input[0] == '_') {
             //将第一个字符转换为大写字母
             input = char.ToUpper(input[1]) + input.Substring(2);
         }
 
         // 检查第一个字符是否为小写字母
-        if (char.IsLower(input[0]))
-        {
+        if (char.IsLower(input[0])) {
             // 将第一个字符转换为大写字母
             input = char.ToUpper(input[0]) + input.Substring(1);
         }

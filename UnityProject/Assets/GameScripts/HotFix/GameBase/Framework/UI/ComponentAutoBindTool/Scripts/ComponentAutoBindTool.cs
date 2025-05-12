@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 组件自动绑定工具
@@ -20,12 +21,14 @@ public class ComponentAutoBindTool : MonoBehaviour {
 
         public string Name;
         public Component BindCom;
-        public string FieldInfoName;
+        public string PropertyInfoName;
     }
 
     public List<BindData> BindDatas = new List<BindData>();
 
     [SerializeField] private string m_ClassName;
+
+    [SerializeField] private string m_ViewModelName;
 
     [SerializeField] private string m_Namespace;
 
@@ -35,6 +38,10 @@ public class ComponentAutoBindTool : MonoBehaviour {
 
     public string ClassName {
         get { return m_ClassName; }
+    }
+
+    public string ViewModelName {
+        get { return m_ViewModelName; }
     }
 
     public string Namespace {
