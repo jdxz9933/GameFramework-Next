@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 8845726164403032986}
   - component: {fileID: 5479605457321674498}
   - component: {fileID: 8003780882970063470}
-  - component: {fileID: -7934801753372489104}
+  - component: {fileID: 1834872057931272054}
   m_Layer: 5
   m_Name: GameMainWindow
   m_TagString: Untagged
@@ -238,7 +238,7 @@ MonoBehaviour:
   from: 1
   to: 0
   duration: 0.2
---- !u!114 &-7934801753372489104
+--- !u!114 &1834872057931272054
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

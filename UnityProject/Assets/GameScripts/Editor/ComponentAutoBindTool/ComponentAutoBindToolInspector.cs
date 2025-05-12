@@ -1026,7 +1026,7 @@ public class ComponentAutoBindToolInspector : Editor
         for (int i = assmblies.Length - 1; i >= 0; i--)
         {
             if (assmblies[i].GetName().Name != "Game.HotUpdate" &&
-                assmblies[i].GetName().Name != "Main.Runtime") continue;
+                assmblies[i].GetName().Name != "GameLogic") continue;
 
             Type[] __types = assmblies[i].GetTypes();
 
