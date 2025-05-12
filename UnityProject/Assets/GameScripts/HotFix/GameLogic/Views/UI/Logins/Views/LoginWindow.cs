@@ -48,6 +48,9 @@ namespace Loxodon.Framework.Examples
         protected override void OnCreate(IBundle bundle)
         {
             this.toastAction = new ToastInteractionAction(this);
+            
+            
+            
             BindingSet<LoginWindow, LoginViewModel> bindingSet = this.CreateBindingSet<LoginWindow, LoginViewModel>();
             bindingSet.Bind().For(v => v.OnInteractionFinished).To(vm => vm.InteractionFinished);
             //bindingSet.Bind().For(v => v.OnToastShow).To(vm => vm.ToastRequest);

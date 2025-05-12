@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Game.HotUpdate;
 using Loxodon.Framework.Commands;
 using Loxodon.Framework.Interactivity;
 using Sirenix.Utilities;
@@ -194,35 +193,16 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper {
                     sw.WriteLine("\nnamespace PleaseAmendNamespace\n{");
 
                 sw.WriteLine($"\t/// <summary>\n\t/// Please modify the description.\n\t/// </summary>");
-                sw.WriteLine("\tpublic partial class " + className + " : UGuiPanel\n\t{");
+                sw.WriteLine("\tpublic partial class " + className + " : Window\n\t{");
 
-                #region OnInit
-
-                sw.WriteLine(
-                    "\t\tprotected override void OnInit(object userData) {\n\t\t\t base.OnInit(userData);\n\t\t\t GetBindComponents(gameObject);\n"); //   OnInit
-                // sw.WriteLine(btnStart);
-                // foreach (var clickFunc in clickFuncDict) {
-                //     sw.WriteLine($"\t\t\t{clickFunc.Key}.onClick.AddListener({clickFunc.Value});");
-                // }
-                // foreach (var inputFunc in inputFuncDict) {
-                //     sw.WriteLine($"\t\t\t{inputFunc.Key}.onEndEdit.AddListener({inputFunc.Value});");
-                // }
-                // sw.WriteLine(btnEnd);
-                sw.WriteLine("\t\t}\n");
-
-                #endregion
-
-                #region OnBindingSet
+                sw.WriteLine($"        private {autoBindTool.ViewModelName} m_ViewModel;");
+                #region OnCreate
 
                 sw.WriteLine(
-                    "\t\tprotected override void OnBindingSet(object userData) {\n\t\t\t base.OnBindingSet(userData);\n\t\t\t "); //   OnBindingSet
-                var viewModelClass = className.Replace("Form", "ViewModel");
-
-                var viewModelClassName = autoBindTool.ViewModelName;
-
-                sw.WriteLine($"\t\t\tvar viewModel = userData as {viewModelClassName};");
-                sw.WriteLine($"\t\t\tif (viewModel == null) return;");
-                sw.WriteLine($"\t\t\tvar bindingSet = this.CreateBindingSet(viewModel);");
+                    "\t\tprotected override void OnCreate(IBundle bundle) {\n\t\t\t GetBindComponents(gameObject);\n"); //   OnCreate
+                
+                sw.WriteLine($"            m_ViewModel = new {autoBindTool.ViewModelName}();");
+                sw.WriteLine($"\t\t\tvar bindingSet = this.CreateBindingSet(m_ViewModel);");
                 sw.WriteLine($"\t\t\tbindingSet.Bind().For(v => v.OnCloseRequest).To(vm => vm.CloseRequest);");
                 sw.WriteLine(btnStart);
                 if (vmType != null)
@@ -236,6 +216,33 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper {
                 sw.WriteLine(btnEnd);
                 sw.WriteLine("\t\t\tbindingSet.Build();");
                 sw.WriteLine("\t\t}\n");
+
+                #endregion
+
+                #region OnBindingSet
+
+                // sw.WriteLine(
+                //     "\t\tprotected override void OnBindingSet(object userData) {\n\t\t\t base.OnBindingSet(userData);\n\t\t\t "); //   OnBindingSet
+                // var viewModelClass = className.Replace("Form", "ViewModel");
+                //
+                // var viewModelClassName = autoBindTool.ViewModelName;
+                //
+                // sw.WriteLine($"\t\t\tvar viewModel = userData as {viewModelClassName};");
+                // sw.WriteLine($"\t\t\tif (viewModel == null) return;");
+                // sw.WriteLine($"\t\t\tvar bindingSet = this.CreateBindingSet(viewModel);");
+                // sw.WriteLine($"\t\t\tbindingSet.Bind().For(v => v.OnCloseRequest).To(vm => vm.CloseRequest);");
+                // sw.WriteLine(btnStart);
+                // if (vmType != null)
+                //     foreach (var bindData in bindDataDict) {
+                //         var code = ConvertBindData(bindData.Value, vmType);
+                //         if (!string.IsNullOrEmpty(code)) {
+                //             sw.WriteLine(code);
+                //         }
+                //     }
+                //
+                // sw.WriteLine(btnEnd);
+                // sw.WriteLine("\t\t\tbindingSet.Build();");
+                // sw.WriteLine("\t\t}\n");
 
                 #endregion
 
@@ -378,13 +385,12 @@ public class UIFormVMGenerateCodeHelper : AutoGenerateCodeHelper {
                 }
 
                 break;
-            case { } type1 when type1 == typeof(UXText):
-                if (fieldInfo.PropertyType == typeof(string)) {
-                    return
-                        $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.Text).To(vm => vm.{fieldInfo.Name}).TwoWay();";
-                }
-
-                break;
+            // case { } type1 when type1 == typeof(UXText):
+            //     if (fieldInfo.PropertyType == typeof(string)) {
+            //         return
+            //             $"\t\t\tbindingSet.Bind(m_{bindData.Name}).For(v => v.Text).To(vm => vm.{fieldInfo.Name}).TwoWay();";
+            //     }
+            //     break;
             case { } type when type == typeof(RectTransform):
                 if (fieldInfo.PropertyType == typeof(bool)) {
                     return

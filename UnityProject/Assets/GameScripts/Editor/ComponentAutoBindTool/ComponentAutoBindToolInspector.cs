@@ -9,11 +9,11 @@ using System.Linq;
 using UnityEditor.Callbacks;
 using System.Text;
 using GameFramework;
-using Game.HotUpdate;
 using UnityEngine.UI;
 
 [CustomEditor(typeof(ComponentAutoBindTool))]
-public class ComponentAutoBindToolInspector : Editor {
+public class ComponentAutoBindToolInspector : Editor
+{
     private ComponentAutoBindTool m_Target;
 
     private SerializedProperty m_BindDatas;
@@ -22,7 +22,7 @@ public class ComponentAutoBindToolInspector : Editor {
     private List<string> m_TempFiledNames = new List<string>();
     private List<string> m_TempComponentTypeNames = new List<string>();
 
-    private string[] s_AssemblyNames = { "Game.HotUpdate", "Game.Editor" };
+    private string[] s_AssemblyNames = { "Assembly-CSharp-Editor", "GameBase" };
     private string[] m_HelperTypeNames;
     private string m_HelperTypeName;
     private int m_HelperTypeNameIndex;
@@ -39,7 +39,8 @@ public class ComponentAutoBindToolInspector : Editor {
     private SerializedProperty m_ComCodePath;
     private SerializedProperty m_MountCodePath;
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         m_Target = (ComponentAutoBindTool)target;
         m_BindDatas = serializedObject.FindProperty("BindDatas");
         m_BindComs = serializedObject.FindProperty("m_BindComs");
@@ -69,7 +70,8 @@ public class ComponentAutoBindToolInspector : Editor {
         serializedObject.ApplyModifiedProperties();
     }
 
-    public override void OnInspectorGUI() {
+    public override void OnInspectorGUI()
+    {
         serializedObject.Update();
 
         DrawTopButton();
@@ -86,27 +88,34 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 绘制顶部按钮
     /// </summary>
-    private void DrawTopButton() {
+    private void DrawTopButton()
+    {
         EditorGUILayout.BeginHorizontal();
 
-        if (GUILayout.Button("排序")) {
+        if (GUILayout.Button("排序"))
+        {
             Sort();
         }
 
-        if (GUILayout.Button("全部删除")) {
+        if (GUILayout.Button("全部删除"))
+        {
             RemoveAll();
         }
 
-        if (GUILayout.Button("删除空引用")) {
+        if (GUILayout.Button("删除空引用"))
+        {
             RemoveNull();
         }
 
-        if (GUILayout.Button("自动绑定组件")) {
+        if (GUILayout.Button("自动绑定组件"))
+        {
             AutoBindComponent();
         }
 
-        if (GUILayout.Button("生成绑定代码")) {
-            if (m_ClassName.stringValue.Equals("UIForm") || string.IsNullOrEmpty(m_ClassName.stringValue)) {
+        if (GUILayout.Button("生成绑定代码"))
+        {
+            if (m_ClassName.stringValue.Equals("UIForm") || string.IsNullOrEmpty(m_ClassName.stringValue))
+            {
                 EditorUtility.DisplayDialog("提示", "请先同步物体名字到类名，点击【物体名】按钮", "确定");
                 return;
             }
@@ -114,13 +123,16 @@ public class ComponentAutoBindToolInspector : Editor {
             GenAutoBindCode();
         }
 
-        if (GUILayout.Button("挂载逻辑代码")) {
+        if (GUILayout.Button("挂载逻辑代码"))
+        {
             string className = !string.IsNullOrEmpty(m_Target.ClassName)
                 ? m_Target.ClassName
                 : m_Target.gameObject.name;
-            if (!m_Target.gameObject.GetComponent(className)) {
+            if (!m_Target.gameObject.GetComponent(className))
+            {
                 Type _type = GetTypeWithName(className);
-                if (_type != null) {
+                if (_type != null)
+                {
                     m_Target.gameObject.AddComponent(_type);
                 }
             }
@@ -134,9 +146,11 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 排序
     /// </summary>
-    private void Sort() {
+    private void Sort()
+    {
         m_TempList.Clear();
-        foreach (BindData data in m_Target.BindDatas) {
+        foreach (BindData data in m_Target.BindDatas)
+        {
             var newdata = new BindData(data.Name, data.BindCom);
             newdata.PropertyInfoName = data.PropertyInfoName;
             m_TempList.Add(newdata);
@@ -145,7 +159,8 @@ public class ComponentAutoBindToolInspector : Editor {
         m_TempList.Sort((x, y) => { return string.Compare(x.Name, y.Name, StringComparison.Ordinal); });
 
         m_BindDatas.ClearArray();
-        foreach (BindData data in m_TempList) {
+        foreach (BindData data in m_TempList)
+        {
             AddBindData(data.Name, data.BindCom, data.PropertyInfoName);
         }
 
@@ -155,7 +170,8 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 全部删除
     /// </summary>
-    private void RemoveAll() {
+    private void RemoveAll()
+    {
         m_BindDatas.ClearArray();
 
         SyncBindComs();
@@ -164,10 +180,13 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 删除空引用
     /// </summary>
-    private void RemoveNull() {
-        for (int i = m_BindDatas.arraySize - 1; i >= 0; i--) {
+    private void RemoveNull()
+    {
+        for (int i = m_BindDatas.arraySize - 1; i >= 0; i--)
+        {
             SerializedProperty element = m_BindDatas.GetArrayElementAtIndex(i).FindPropertyRelative("BindCom");
-            if (element.objectReferenceValue == null) {
+            if (element.objectReferenceValue == null)
+            {
                 m_BindDatas.DeleteArrayElementAtIndex(i);
             }
         }
@@ -178,9 +197,11 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 自动绑定组件
     /// </summary>
-    private void AutoBindComponent() {
+    private void AutoBindComponent()
+    {
         m_TempList.Clear();
-        foreach (BindData data in m_Target.BindDatas) {
+        foreach (BindData data in m_Target.BindDatas)
+        {
             var newData = new BindData(data.Name, data.BindCom);
             newData.PropertyInfoName = data.PropertyInfoName;
             m_TempList.Add(newData);
@@ -189,31 +210,42 @@ public class ComponentAutoBindToolInspector : Editor {
         m_BindDatas.ClearArray();
 
         Transform[] childs = m_Target.gameObject.GetComponentsInChildren<Transform>(true);
-        foreach (Transform child in childs) {
+        foreach (Transform child in childs)
+        {
             m_TempFiledNames.Clear();
             m_TempComponentTypeNames.Clear();
-            if (child == m_Target.transform) {
+            if (child == m_Target.transform)
+            {
                 continue;
             }
 
             ComponentAutoBindTool componentAuto1 = child.gameObject.GetComponent<ComponentAutoBindTool>();
             ComponentAutoBindTool componentAuto = child.gameObject.GetComponentInParent<ComponentAutoBindTool>(true);
-            if (componentAuto1 == null) {
-                if (componentAuto != null && componentAuto != m_Target) {
+            if (componentAuto1 == null)
+            {
+                if (componentAuto != null && componentAuto != m_Target)
+                {
                     continue;
                 }
             }
 
-            if (AutoBindGlobalSetting.IsValidBind(child, m_TempFiledNames, m_TempComponentTypeNames)) {
-                for (int i = 0; i < m_TempFiledNames.Count; i++) {
+            if (AutoBindGlobalSetting.IsValidBind(child, m_TempFiledNames, m_TempComponentTypeNames))
+            {
+                for (int i = 0; i < m_TempFiledNames.Count; i++)
+                {
                     Component com = child.GetComponent(m_TempComponentTypeNames[i]);
-                    if (com == null) {
+                    if (com == null)
+                    {
                         Debug.LogError($"{child.name}上不存在{m_TempComponentTypeNames[i]}的组件");
-                    } else {
+                    }
+                    else
+                    {
                         string newFiledName = m_TempFiledNames[i].Replace("#", "");
                         string fieldInfoName = string.Empty;
-                        for (int j = 0; j < m_TempList.Count; j++) {
-                            if (m_TempList[j].Name == newFiledName) {
+                        for (int j = 0; j < m_TempList.Count; j++)
+                        {
+                            if (m_TempList[j].Name == newFiledName)
+                            {
                                 fieldInfoName = m_TempList[j].PropertyInfoName;
                                 break;
                             }
@@ -228,7 +260,8 @@ public class ComponentAutoBindToolInspector : Editor {
         SyncBindComs();
     }
 
-    private void DrawGenHelperSelect() {
+    private void DrawGenHelperSelect()
+    {
         m_GenHelperTypeName = m_GenHelperTypeNames[0];
         // if (m_Target.GenerateCodeHelper != null) {
         //     m_GenHelperTypeName = m_Target.GenerateCodeHelper.GetType().Name;
@@ -243,10 +276,13 @@ public class ComponentAutoBindToolInspector : Editor {
         //     m_Target.GenerateCodeHelper = helper;
         // }
 
-        if (!string.IsNullOrEmpty(m_Target.generateCodeHelperTypeName)) {
+        if (!string.IsNullOrEmpty(m_Target.generateCodeHelperTypeName))
+        {
             m_GenHelperTypeName = m_Target.generateCodeHelperTypeName;
-            for (int i = 0; i < m_GenHelperTypeNames.Length; i++) {
-                if (m_GenHelperTypeName == m_GenHelperTypeNames[i]) {
+            for (int i = 0; i < m_GenHelperTypeNames.Length; i++)
+            {
+                if (m_GenHelperTypeName == m_GenHelperTypeNames[i])
+                {
                     m_GenHelperTypeNameIndex = i;
                 }
             }
@@ -267,7 +303,8 @@ public class ComponentAutoBindToolInspector : Editor {
         // }
         int selectedIndex =
             EditorGUILayout.Popup("AutoBindGenCodeHelper", m_GenHelperTypeNameIndex, m_GenHelperTypeNames);
-        if (selectedIndex != m_GenHelperTypeNameIndex) {
+        if (selectedIndex != m_GenHelperTypeNameIndex)
+        {
             m_GenHelperTypeNameIndex = selectedIndex;
             m_GenHelperTypeName = m_GenHelperTypeNames[selectedIndex];
             AutoGenerateCodeHelper helper1 =
@@ -281,25 +318,33 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 绘制辅助器选择框
     /// </summary>
-    private void DrawHelperSelect() {
+    private void DrawHelperSelect()
+    {
         m_HelperTypeName = m_HelperTypeNames[0];
 
-        if (m_Target.RuleHelper != null) {
+        if (m_Target.RuleHelper != null)
+        {
             m_HelperTypeName = m_Target.RuleHelper.GetType().Name;
 
-            for (int i = 0; i < m_HelperTypeNames.Length; i++) {
-                if (m_HelperTypeName == m_HelperTypeNames[i]) {
+            for (int i = 0; i < m_HelperTypeNames.Length; i++)
+            {
+                if (m_HelperTypeName == m_HelperTypeNames[i])
+                {
                     m_HelperTypeNameIndex = i;
                 }
             }
-        } else {
+        }
+        else
+        {
             IAutoBindRuleHelper helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName, s_AssemblyNames);
             m_Target.RuleHelper = helper;
         }
 
-        foreach (GameObject go in Selection.gameObjects) {
+        foreach (GameObject go in Selection.gameObjects)
+        {
             ComponentAutoBindTool autoBindTool = go.GetComponent<ComponentAutoBindTool>();
-            if (autoBindTool != null && autoBindTool.RuleHelper == null) {
+            if (autoBindTool != null && autoBindTool.RuleHelper == null)
+            {
                 IAutoBindRuleHelper helper =
                     (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName, s_AssemblyNames);
                 autoBindTool.RuleHelper = helper;
@@ -307,7 +352,8 @@ public class ComponentAutoBindToolInspector : Editor {
         }
 
         int selectedIndex = EditorGUILayout.Popup("AutoBindRuleHelper", m_HelperTypeNameIndex, m_HelperTypeNames);
-        if (selectedIndex != m_HelperTypeNameIndex) {
+        if (selectedIndex != m_HelperTypeNameIndex)
+        {
             m_HelperTypeNameIndex = selectedIndex;
             m_HelperTypeName = m_HelperTypeNames[selectedIndex];
             IAutoBindRuleHelper helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName, s_AssemblyNames);
@@ -319,10 +365,12 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 绘制设置项
     /// </summary>
-    private void DrawSetting() {
+    private void DrawSetting()
+    {
         EditorGUILayout.BeginHorizontal();
         m_Namespace.stringValue = EditorGUILayout.TextField(new GUIContent("命名空间："), m_Namespace.stringValue);
-        if (GUILayout.Button("默认设置")) {
+        if (GUILayout.Button("默认设置"))
+        {
             m_Namespace.stringValue = m_Setting.Namespace;
         }
 
@@ -330,7 +378,8 @@ public class ComponentAutoBindToolInspector : Editor {
 
         EditorGUILayout.BeginHorizontal();
         m_ClassName.stringValue = EditorGUILayout.TextField(new GUIContent("类名："), m_ClassName.stringValue);
-        if (GUILayout.Button("物体名")) {
+        if (GUILayout.Button("物体名"))
+        {
             m_ClassName.stringValue = m_Target.gameObject.name;
         }
 
@@ -339,27 +388,33 @@ public class ComponentAutoBindToolInspector : Editor {
         EditorGUILayout.BeginHorizontal();
         m_ViewModelName.stringValue =
             EditorGUILayout.TextField(new GUIContent("ViewModel类名："), m_ViewModelName.stringValue);
-        if (GUILayout.Button("默认设置")) {
+        if (GUILayout.Button("默认设置"))
+        {
             m_ViewModelName.stringValue = m_ClassName.stringValue + "ViewModel";
         }
+
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.LabelField("组件代码保存路径：");
         EditorGUILayout.LabelField(m_ComCodePath.stringValue);
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("选择组件代码路径")) {
+        if (GUILayout.Button("选择组件代码路径"))
+        {
             string folder = Path.Combine(Application.dataPath, m_ComCodePath.stringValue);
-            if (!Directory.Exists(folder)) {
+            if (!Directory.Exists(folder))
+            {
                 folder = Application.dataPath;
             }
 
             string path = EditorUtility.OpenFolderPanel("选择组件代码保存路径", folder, "");
-            if (!string.IsNullOrEmpty(path)) {
+            if (!string.IsNullOrEmpty(path))
+            {
                 m_ComCodePath.stringValue = path.Replace(Application.dataPath + "/", "");
             }
         }
 
-        if (GUILayout.Button("默认设置")) {
+        if (GUILayout.Button("默认设置"))
+        {
             m_ComCodePath.stringValue = m_Setting.ComCodePath;
         }
 
@@ -368,40 +423,48 @@ public class ComponentAutoBindToolInspector : Editor {
         EditorGUILayout.LabelField("挂载代码保存路径：");
         EditorGUILayout.LabelField(m_MountCodePath.stringValue);
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("选择挂载代码路径")) {
+        if (GUILayout.Button("选择挂载代码路径"))
+        {
             string folder = Path.Combine(Application.dataPath, m_MountCodePath.stringValue);
-            if (!Directory.Exists(folder)) {
+            if (!Directory.Exists(folder))
+            {
                 folder = Application.dataPath;
             }
 
             string path = EditorUtility.OpenFolderPanel("选择挂载代码保存路径", folder, "");
-            if (!string.IsNullOrEmpty(path)) {
+            if (!string.IsNullOrEmpty(path))
+            {
                 m_MountCodePath.stringValue = path.Replace(Application.dataPath + "/", "");
             }
         }
 
-        if (GUILayout.Button("默认设置")) {
+        if (GUILayout.Button("默认设置"))
+        {
             m_MountCodePath.stringValue = m_Setting.MountCodePath;
         }
 
         EditorGUILayout.EndHorizontal();
     }
 
-    private List<PropertyInfo> GetClassFields(ComponentAutoBindTool autoBindTool, string className) {
+    private List<PropertyInfo> GetClassFields(ComponentAutoBindTool autoBindTool, string className)
+    {
         List<PropertyInfo> fileInfos = new List<PropertyInfo>();
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         Type targetType = assemblies
             .SelectMany(a => a.GetTypes())
             .FirstOrDefault(t => t.Namespace == autoBindTool.Namespace && t.Name == className);
 
-        if (targetType == null) {
+        if (targetType == null)
+        {
             Debug.LogError($"找不到类型: {autoBindTool.Namespace}.{className}");
             return fileInfos;
         }
 
         PropertyInfo[] fields = targetType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        if (fields.Length > 0) {
-            for (int i = 0; i < fields.Length; i++) {
+        if (fields.Length > 0)
+        {
+            for (int i = 0; i < fields.Length; i++)
+            {
                 var field = fields[i];
                 //如果字段是有AutoBindAttribute特性的
                 // if (field.GetCustomAttribute<AutoBindAttribute>() != null)
@@ -417,7 +480,8 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 绘制键值对数据
     /// </summary>
-    private void DrawKvData() {
+    private void DrawKvData()
+    {
         //绘制key value数据
 
         int needDeleteIndex = -1;
@@ -427,16 +491,20 @@ public class ComponentAutoBindToolInspector : Editor {
 
         List<string> filedNames = new List<string>();
         List<PropertyInfo> fields = new List<PropertyInfo>();
-        if (m_Target.GenerateCodeHelper is UIFormVMGenerateCodeHelper) {
+        if (m_Target.GenerateCodeHelper is UIFormVMGenerateCodeHelper)
+        {
             fields = GetClassFields(m_Target, m_ViewModelName.stringValue);
-            for (int i = 0; i < fields.Count; i++) {
+            for (int i = 0; i < fields.Count; i++)
+            {
                 var field = fields[i];
                 filedNames.Add(field.Name);
             }
+
             filedNames.Add("Empty");
         }
 
-        for (int i = 0; i < m_BindDatas.arraySize; i++) {
+        for (int i = 0; i < m_BindDatas.arraySize; i++)
+        {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField($"[{i}]", GUILayout.Width(25));
             property = m_BindDatas.GetArrayElementAtIndex(i).FindPropertyRelative("Name");
@@ -445,26 +513,34 @@ public class ComponentAutoBindToolInspector : Editor {
             property.objectReferenceValue =
                 EditorGUILayout.ObjectField(property.objectReferenceValue, typeof(Component), true);
 
-            if (m_Target.GenerateCodeHelper is UIFormVMGenerateCodeHelper) {
+            if (m_Target.GenerateCodeHelper is UIFormVMGenerateCodeHelper)
+            {
                 property = m_BindDatas.GetArrayElementAtIndex(i).FindPropertyRelative("PropertyInfoName");
                 int chooseIndex = -1;
-                for (int j = 0; j < fields.Count; j++) {
+                for (int j = 0; j < fields.Count; j++)
+                {
                     var field = fields[j];
-                    if (field.Name == property.stringValue) {
+                    if (field.Name == property.stringValue)
+                    {
                         chooseIndex = j;
                     }
                 }
+
                 chooseIndex = EditorGUILayout.Popup(chooseIndex, filedNames.ToArray());
-                if (chooseIndex >= 0 && chooseIndex < fields.Count) {
+                if (chooseIndex >= 0 && chooseIndex < fields.Count)
+                {
                     //用下拉框显示字段名 
                     property.stringValue = fields[chooseIndex].Name;
-                } else {
+                }
+                else
+                {
                     property.stringValue = string.Empty;
                 }
             }
 
             // property.stringValue = EditorGUILayout.TextField(property.stringValue, GUILayout.Width(150));
-            if (GUILayout.Button("X")) {
+            if (GUILayout.Button("X"))
+            {
                 //将元素下标添加进删除list
                 needDeleteIndex = i;
             }
@@ -473,7 +549,8 @@ public class ComponentAutoBindToolInspector : Editor {
         }
 
         //删除data
-        if (needDeleteIndex != -1) {
+        if (needDeleteIndex != -1)
+        {
             m_BindDatas.DeleteArrayElementAtIndex(needDeleteIndex);
             SyncBindComs();
         }
@@ -484,10 +561,13 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 添加绑定数据
     /// </summary>
-    private void AddBindData(string name, Component bindCom, string fieldInfoName) {
-        for (int i = 0; i < m_BindDatas.arraySize; i++) {
+    private void AddBindData(string name, Component bindCom, string fieldInfoName)
+    {
+        for (int i = 0; i < m_BindDatas.arraySize; i++)
+        {
             SerializedProperty elementData = m_BindDatas.GetArrayElementAtIndex(i);
-            if (elementData.FindPropertyRelative("Name").stringValue == name) {
+            if (elementData.FindPropertyRelative("Name").stringValue == name)
+            {
                 Debug.LogError($"有重复名字！请检查后重新生成！Name:{name}");
                 return;
             }
@@ -504,10 +584,12 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 同步绑定数据
     /// </summary>
-    private void SyncBindComs() {
+    private void SyncBindComs()
+    {
         m_BindComs.ClearArray();
 
-        for (int i = 0; i < m_BindDatas.arraySize; i++) {
+        for (int i = 0; i < m_BindDatas.arraySize; i++)
+        {
             SerializedProperty property = m_BindDatas.GetArrayElementAtIndex(i).FindPropertyRelative("BindCom");
             m_BindComs.InsertArrayElementAtIndex(i);
             m_BindComs.GetArrayElementAtIndex(i).objectReferenceValue = property.objectReferenceValue;
@@ -517,23 +599,31 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 获取指定基类在指定程序集中的所有子类名称
     /// </summary>
-    private string[] GetTypeNames(Type typeBase, string[] assemblyNames) {
+    private string[] GetTypeNames(Type typeBase, string[] assemblyNames)
+    {
         List<string> typeNames = new List<string>();
-        foreach (string assemblyName in assemblyNames) {
+        foreach (string assemblyName in assemblyNames)
+        {
             Assembly assembly = null;
-            try {
+            try
+            {
                 assembly = Assembly.Load(assemblyName);
-            } catch {
+            }
+            catch
+            {
                 continue;
             }
 
-            if (assembly == null) {
+            if (assembly == null)
+            {
                 continue;
             }
 
             Type[] types = assembly.GetTypes();
-            foreach (Type type in types) {
-                if (type.IsClass && !type.IsAbstract && typeBase.IsAssignableFrom(type)) {
+            foreach (Type type in types)
+            {
+                if (type.IsClass && !type.IsAbstract && typeBase.IsAssignableFrom(type))
+                {
                     typeNames.Add(type.FullName);
                 }
             }
@@ -546,12 +636,15 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 创建辅助器实例
     /// </summary>
-    private object CreateHelperInstance(string helperTypeName, string[] assemblyNames) {
-        foreach (string assemblyName in assemblyNames) {
+    private object CreateHelperInstance(string helperTypeName, string[] assemblyNames)
+    {
+        foreach (string assemblyName in assemblyNames)
+        {
             Assembly assembly = Assembly.Load(assemblyName);
 
             object instance = assembly.CreateInstance(helperTypeName);
-            if (instance != null) {
+            if (instance != null)
+            {
                 return instance;
             }
         }
@@ -563,13 +656,17 @@ public class ComponentAutoBindToolInspector : Editor {
     /// 写入第三方引用
     /// </summary>
     /// <param name="streamWriter">写入流</param>
-    private void WriteUsing(StreamWriter streamWriter) {
+    private void WriteUsing(StreamWriter streamWriter)
+    {
         usingSameStr.Clear();
         //根据索引获取
-        for (int i = 0; i < m_Target.BindDatas.Count; i++) {
+        for (int i = 0; i < m_Target.BindDatas.Count; i++)
+        {
             BindData data = m_Target.BindDatas[i];
-            if (!string.IsNullOrEmpty(data.BindCom.GetType().Namespace)) {
-                if (usingSameStr.Contains(data.BindCom.GetType().Namespace)) {
+            if (!string.IsNullOrEmpty(data.BindCom.GetType().Namespace))
+            {
+                if (usingSameStr.Contains(data.BindCom.GetType().Namespace))
+                {
                     continue;
                 }
 
@@ -584,14 +681,16 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 生成自动绑定代码
     /// </summary>
-    private void GenAutoBindCode() {
+    private void GenAutoBindCode()
+    {
         GameObject go = m_Target.gameObject;
 
         string className = !string.IsNullOrEmpty(m_Target.ClassName) ? m_Target.ClassName : go.name;
         string codePath = !string.IsNullOrEmpty(m_Target.ComCodePath) ? m_Target.ComCodePath : m_Setting.ComCodePath;
         codePath = Path.Combine(Application.dataPath, codePath);
         codePath = $"{codePath}/{m_Target.GenerateCodeHelper.DirectoryPath}";
-        if (!Directory.Exists(codePath)) {
+        if (!Directory.Exists(codePath))
+        {
             Debug.LogError($"{go.name}的代码保存路径{codePath}无效");
             Directory.CreateDirectory(codePath);
         }
@@ -654,14 +753,17 @@ public class ComponentAutoBindToolInspector : Editor {
         //EditorUtility.DisplayDialog("提示", "代码生成完毕,正在挂载", "OK");
     }
 
-    private void ModifyFileFormat(string filePath) {
+    private void ModifyFileFormat(string filePath)
+    {
         string text = "";
-        using (StreamReader read = new StreamReader(filePath)) {
+        using (StreamReader read = new StreamReader(filePath))
+        {
             string oldtext = read.ReadToEnd();
             text = oldtext;
             text = text.Replace("\n", "\r\n");
             text = text.Replace("\r\r\n", "\r\n"); // 防止替换了正常的换行符      
-            if (oldtext.Length == text.Length) {
+            if (oldtext.Length == text.Length)
+            {
                 // 如果没有变化就退出
             }
         }
@@ -679,7 +781,8 @@ public class ComponentAutoBindToolInspector : Editor {
         "//版 本:#Version# \r\n" +
         "// ===============================================\r\n";
 
-    private string GetFileHead() {
+    private string GetFileHead()
+    {
         string annotationStr = annotationCSStr;
         //annotationStr = annotationStr.Replace("#Class#",
         //    fileNameWithoutExtension);
@@ -703,13 +806,17 @@ public class ComponentAutoBindToolInspector : Editor {
     string strChangeAuthor = "//修改作者:";
     string strChangeTime = "//修改时间:";
 
-    private List<string> ChangeFileHead(List<string> strList) {
-        for (int i = 0; i < strList.Count; i++) {
-            if (strList[i].Contains(strChangeAuthor)) {
+    private List<string> ChangeFileHead(List<string> strList)
+    {
+        for (int i = 0; i < strList.Count; i++)
+        {
+            if (strList[i].Contains(strChangeAuthor))
+            {
                 strList[i] = $"{strChangeAuthor}{SystemInfo.deviceName}";
             }
 
-            if (strList[i].Contains(strChangeTime)) {
+            if (strList[i].Contains(strChangeTime))
+            {
                 strList[i] = $"{strChangeTime}{System.DateTime.Now:yyyy-MM-dd HH-mm-ss}";
             }
         }
@@ -720,19 +827,22 @@ public class ComponentAutoBindToolInspector : Editor {
     /// <summary>
     /// 生成自动绑定的挂载代码
     /// </summary>
-    private void GenAutoBindMountCode(GameObject go, string className) {
+    private void GenAutoBindMountCode(GameObject go, string className)
+    {
         string codePath = !string.IsNullOrEmpty(m_Target.MountCodePath)
             ? m_Target.MountCodePath
             : m_Setting.MountCodePath;
         codePath = Path.Combine(Application.dataPath, codePath);
-        if (!Directory.Exists(codePath)) {
+        if (!Directory.Exists(codePath))
+        {
             Debug.LogError($"挂载{go.name}的代码保存路径{codePath}无效");
             return;
         }
 
         //string folderName = GetClassFolderName(className);
         //codePath = $"{codePath}/{folderName}";
-        if (!Directory.Exists(codePath)) {
+        if (!Directory.Exists(codePath))
+        {
             Directory.CreateDirectory(codePath);
         }
 
@@ -890,11 +1000,14 @@ public class ComponentAutoBindToolInspector : Editor {
         ModifyFileFormat(filePath);
     }
 
-    private string GetClassFolderName(string className) {
+    private string GetClassFolderName(string className)
+    {
         string folderName = className.Replace("Form", "");
-        if (className.Contains("_")) {
+        if (className.Contains("_"))
+        {
             string[] args = className.Split('_');
-            if (args.Length > 1) {
+            if (args.Length > 1)
+            {
                 folderName = args[0];
             }
         }
@@ -906,16 +1019,19 @@ public class ComponentAutoBindToolInspector : Editor {
     /// Get a type with name.
     /// 根据名字获取一个类型
     /// </summary>
-    public static Type GetTypeWithName(string typeName) {
+    public static Type GetTypeWithName(string typeName)
+    {
         Assembly[] assmblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        for (int i = assmblies.Length - 1; i >= 0; i--) {
+        for (int i = assmblies.Length - 1; i >= 0; i--)
+        {
             if (assmblies[i].GetName().Name != "Game.HotUpdate" &&
                 assmblies[i].GetName().Name != "Main.Runtime") continue;
 
             Type[] __types = assmblies[i].GetTypes();
 
-            for (int j = __types.Length - 1; j >= 0; j--) {
+            for (int j = __types.Length - 1; j >= 0; j--)
+            {
                 if (__types[j].Name != typeName) continue;
                 return __types[j];
             }

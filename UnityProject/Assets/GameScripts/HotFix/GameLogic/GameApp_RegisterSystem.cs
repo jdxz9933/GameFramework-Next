@@ -5,6 +5,9 @@ using GameLogic;
 using GameFramework;
 using GameMain;
 using Loxodon.Framework.Binding;
+using Loxodon.Framework.Binding.Proxy.Sources.Object;
+using Loxodon.Framework.Binding.Proxy.Sources;
+// using Loxodon.Framework.Binding.Proxy.Sources.Weaving;
 using Loxodon.Framework.Contexts;
 using Loxodon.Framework.Examples;
 using Loxodon.Framework.Localizations;
@@ -40,6 +43,10 @@ public partial class GameApp
         /* Initialize the data binding service */
         BindingServiceBundle bundle = new BindingServiceBundle(context.GetContainer());
         bundle.Start();
+
+        // INodeProxyFactoryRegister nodeFactoryRegister = container.Resolve<INodeProxyFactoryRegister>();
+         // nodeFactoryRegister.Register(new  WovenNodeProxyFactory(), 100); //优先级设置为100即可
+  
 
         /* Initialize the ui view locator and register UIViewLocator */
         container.Register<IUIViewLocator>(new UIViewLocator());

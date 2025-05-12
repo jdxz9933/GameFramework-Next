@@ -97,13 +97,14 @@ GameObject:
   - component: {fileID: 8845726164403032986}
   - component: {fileID: 5479605457321674498}
   - component: {fileID: 8003780882970063470}
+  - component: {fileID: -7934801753372489104}
   m_Layer: 5
   m_Name: GameMainWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &224000012031344950
 RectTransform:
   m_ObjectHideFlags: 0
@@ -192,15 +193,16 @@ MonoBehaviour:
   BindDatas:
   - Name: Btn_Test
     BindCom: {fileID: 6655709259523959131}
-    FieldInfoName: 
+    PropertyInfoName: Btn_TestCommand
   - Name: Txt_Test
     BindCom: {fileID: 1560614782457871233}
-    FieldInfoName: 
-  m_ClassName: GameMain
+    PropertyInfoName: TestTxt
+  m_ClassName: GameMainWindow
+  m_ViewModelName: GameMainViewModel
   m_Namespace: GameLogic
   m_ComCodePath: GameScripts/HotFix/GameLogic/UI
-  m_MountCodePath: GameScripts/HotFix/GameLogic/GameMain/View/UI/View
-  generateCodeHelperTypeName: UIFormGenerateCodeHelper
+  m_MountCodePath: GameScripts/HotFix/GameLogic/GameMain/View/UI/Views
+  generateCodeHelperTypeName: UIFormVMGenerateCodeHelper
   m_BindComs:
   - {fileID: 6655709259523959131}
   - {fileID: 1560614782457871233}
@@ -236,6 +238,21 @@ MonoBehaviour:
   from: 1
   to: 0
   duration: 0.2
+--- !u!114 &-7934801753372489104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000011205695590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e199d09fab80244834230050895492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windowType: 0
+  windowPriority: 0
+  stateBroadcast: 1
 --- !u!1 &1000012115088530
 GameObject:
   m_ObjectHideFlags: 0

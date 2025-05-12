@@ -2,6 +2,7 @@
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<AssemblyNames>
 		<Item>Assembly-CSharp</Item>
+		<Item>GameLogic</Item>
 	</AssemblyNames>
 	<PropertyChanged defaultWeaving ="true" />
 </Weavers>
