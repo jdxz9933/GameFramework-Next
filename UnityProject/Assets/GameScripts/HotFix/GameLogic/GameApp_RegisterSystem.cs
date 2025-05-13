@@ -2,11 +2,8 @@
 using System.Globalization;
 using GameBase;
 using GameLogic;
-using GameFramework;
 using GameMain;
 using Loxodon.Framework.Binding;
-using Loxodon.Framework.Binding.Proxy.Sources.Object;
-using Loxodon.Framework.Binding.Proxy.Sources;
 // using Loxodon.Framework.Binding.Proxy.Sources.Weaving;
 using Loxodon.Framework.Contexts;
 using Loxodon.Framework.Examples;

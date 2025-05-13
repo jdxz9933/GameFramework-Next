@@ -31,12 +31,18 @@ MonoBehaviour:
     serializationDepthLimit: 64
     assemblyNames:
     - Assembly-CSharp
+    - CW.Common
     - EasySave3
     - GameBase
     - GameLogic
     - GameMain.Runtime
     - GameProto
     - HybridCLR.Runtime
+    - LeanCommon
+    - LeanCommonPlus
+    - LeanTouch
+    - LeanTouchPlus
+    - Leihuo.UXTools.Runtime
     - Loxodon.Framework
     - Loxodon.Framework.Binding.Weaving
     - Loxodon.Log
