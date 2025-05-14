@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
 // using UnityGameFramework.Extension;
 
 namespace GameLogic {
@@ -59,7 +60,7 @@ namespace GameLogic {
         private void OnDestroy() {
             if (m_TextureObject != null) {
                 if (m_TextureObject.Target != null)
-                    GFX.Texture.Unspawn(m_TextureObject);
+                    TextureSystem.Instance.Unspawn(m_TextureObject);
                 m_TextureObject = null;
             }
         }
@@ -90,7 +91,7 @@ namespace GameLogic {
 
         public void SetTextureObject(TextureObject textureObject) {
             if (m_TextureObject != null) {
-                TextureComponent.Instance.Unspawn(m_TextureObject);
+                TextureSystem.Instance.Unspawn(m_TextureObject);
                 // GFX.Texture.Unspawn(m_TextureObject);
                 m_TextureObject = null;
             }
@@ -149,9 +150,8 @@ namespace GameLogic {
                 // var textureObject = GFX.Texture.LoadTextureObject(imgPath);
                 // SetTextureObject(textureObject);
                 // OnLoadComplete();
-                
-                
-                TextureComponent.Instance.SetTextureByFileAsync(this, imgPath).Forget();
+
+                TextureSystem.Instance.SetTextureByFileAsync(this, imgPath).Forget();
                 // GFX.Texture.SetTextureByFileAsync(this, imgPath).Forget();
                 // m_RawImage.sprite = TextureExt.ToSprite(GFX.Texture.LoadTexture(imgPath));
             } else if (isWeb) {
@@ -159,7 +159,7 @@ namespace GameLogic {
                     OnLoadComplete();
                     return;
                 }
-                TextureComponent.Instance.SetTextureByNetworkAsync(this, imgPath).Forget();
+                TextureSystem.Instance.SetTextureByNetworkAsync(this, imgPath).Forget();
             } else {
                 if (imgPath == m_lastImgPath) {
                     OnLoadComplete();

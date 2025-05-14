@@ -8,8 +8,8 @@ using System.IO;
 using GameBase;
 using GameFramework.ObjectPool;
 
-namespace Game.HotUpdate {
-    public partial class TextureComponent : BaseLogicSys<TextureComponent> {
+namespace GameLogic {
+    public partial class TextureSystem : BaseLogicSys<TextureSystem> {
         private const int maxCachedDay = 30;
 
         private const ulong maxCachedSize = ulong.MaxValue;

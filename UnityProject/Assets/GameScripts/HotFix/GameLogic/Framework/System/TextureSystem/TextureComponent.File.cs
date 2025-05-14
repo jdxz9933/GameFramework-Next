@@ -7,8 +7,8 @@ using UnityEngine;
 using UnityGameFramework.Runtime;
 using System.IO;
 
-namespace Game.HotUpdate {
-    public partial class TextureComponent {
+namespace GameLogic {
+    public partial class TextureSystem {
         private const string TextureFileSystemName = "TextureFileSystem";
 
         private string GetFilePath(string file) {

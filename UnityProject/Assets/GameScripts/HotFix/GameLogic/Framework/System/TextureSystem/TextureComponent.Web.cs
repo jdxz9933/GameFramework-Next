@@ -6,8 +6,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace Game.HotUpdate {
-    public partial class TextureComponent {
+namespace GameLogic {
+    public partial class TextureSystem {
         private Dictionary<WebWaitImage, HTTPRequest> m_Requests = new Dictionary<WebWaitImage, HTTPRequest>();
 
         public async UniTask SetTextureByNetworkAsync(WebWaitImage image, string file) {

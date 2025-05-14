@@ -7,7 +7,7 @@ using unity.libwebp.Interop;
 using UnityEngine;
 using WebP;
 
-namespace Game.HotUpdate {
+namespace GameLogic {
     public static class TextureExt {
         public enum ImageType {
             defult,

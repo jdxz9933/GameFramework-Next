@@ -3,7 +3,7 @@ using GameFramework.ObjectPool;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace Game.HotUpdate {
+namespace GameLogic {
     public class TextureObject : ObjectBase {
         private TextureLoad m_TextureLoad;
         private ResourceComponent m_ResourceComponent;

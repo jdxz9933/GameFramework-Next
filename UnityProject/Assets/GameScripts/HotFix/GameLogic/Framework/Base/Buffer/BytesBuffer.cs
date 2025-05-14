@@ -6,7 +6,7 @@ using GameFramework;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace Game.HotUpdate {
+namespace GameLogic {
     public class BytesBuffer : IReference, IDisposable {
         public byte[] Data;
 

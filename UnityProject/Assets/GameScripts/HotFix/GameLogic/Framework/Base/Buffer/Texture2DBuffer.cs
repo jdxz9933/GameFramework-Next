@@ -3,7 +3,7 @@ using GameFramework;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace Game.HotUpdate {
+namespace GameLogic {
     public class Texture2DBuffer : IReference, IDisposable {
         public Texture2D Texture2D;
 
