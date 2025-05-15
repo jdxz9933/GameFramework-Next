@@ -22,7 +22,7 @@ public class ComponentAutoBindToolInspector : Editor
     private List<string> m_TempFiledNames = new List<string>();
     private List<string> m_TempComponentTypeNames = new List<string>();
 
-    private string[] s_AssemblyNames = { "Assembly-CSharp-Editor", "GameBase" };
+    private string[] s_AssemblyNames = { "Assembly-CSharp-Editor", "GameLogic" };
     private string[] m_HelperTypeNames;
     private string m_HelperTypeName;
     private int m_HelperTypeNameIndex;

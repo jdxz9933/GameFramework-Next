@@ -776,7 +776,7 @@ PlayerSettings:
     PS4: TextMeshPro
     PS5: TextMeshPro
     Stadia: TextMeshPro
-    Standalone: DIN_PROFILER;ENABLE_LOG;TextMeshPro
+    Standalone: DIN_PROFILER;ENABLE_LOG;TextMeshPro;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1
     WebGL: DIN_PROFILER;ENABLE_LOG;TextMeshPro;UNITY_WECHAT_GAME
     Windows Store Apps: DIN_PROFILER;ENABLE_LOG;TextMeshPro
     XboxOne: TextMeshPro

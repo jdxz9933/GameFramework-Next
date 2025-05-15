@@ -108,7 +108,7 @@ namespace ThunderFireUITool
                 }
 
                 EditorSceneManager.OpenScene(ThunderFireUIToolConfig.ScenePath + "PreviewScene.unity", OpenSceneMode.Single);
-                previewCanvas = GameObject.Find("UXPreviewCanvas");
+                previewCanvas = GameObject.Find("UICanvas");
                 InitPreviewCanvas(tempPrefab, previewCanvas);
             }
             else

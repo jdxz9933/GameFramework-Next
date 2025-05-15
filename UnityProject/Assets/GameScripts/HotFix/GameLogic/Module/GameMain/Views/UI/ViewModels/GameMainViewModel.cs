@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Loxodon.Framework.Commands;
+using Loxodon.Framework.Contexts;
 using Loxodon.Framework.ViewModels;
 using PropertyChanged;
 using UnityEngine;
@@ -20,6 +21,10 @@ namespace GameLogic
         private void Btn_TestEvent()
         {
             TestTxt = "Test1234";
+            FightContext context = new FightContext();
+            Context.AddContext(nameof(FightContext), context);
+            
+            context.StartFight();
         }
 
         public ICommand Btn_TestCommand => _btn_TestCommand;

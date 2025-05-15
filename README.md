@@ -33,6 +33,27 @@ Assets/GameScripts
 └── Runtime             // Runtime程序集
 ```
 
+``` 
+//项目结构概览
+Assets
+├── AssetArt            // 美术资源目录
+│   └── Atlas           // 自动生成图集目录
+├── AssetRaw            // 热更资源目录
+│   ├── UIRaw           // UI图片目录
+│   │   ├── Atlas       // 需要自动生成图集的UI素材目录
+│   │   └── Raw         // 不需要自动生成图集的UI素材目录
+├── Editor              // 编辑器脚本目录
+├── HybridCLRData       // hybridclr相关目录
+├── Scenes              // 主场景目录
+└── GameScripts         // 程序集目录
+├── Procedure       // 启动器与流程
+└── HotFix          // 游戏热更程序集目录 [Folder]
+├── GameProto   // 游戏配置协议程序集 [Dll]
+└── GameLogic   // 游戏业务逻辑程序集 [Dll]
+└── GameApp.cs                  // 热更主入口
+
+``` 
+
 PS:pc、android、ios、webgl热更已跑通，旧版GameFramework-at-YooAsset请挪步去classic分支
 
 ## <strong>特别鸣谢

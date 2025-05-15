@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Cysharp.Threading.Tasks;
 using GameLogic;
 using GameFramework;
 using Loxodon.Framework.Examples;
 using Loxodon.Framework.Views;
 using UnityGameFramework.Runtime;
 
-public partial class GameApp: Singleton<GameApp>
+public partial class GameApp : Singleton<GameApp>
 {
     private static List<Assembly> s_HotfixAssembly;
-    
+
     /// <summary>
     /// 热更域App主入口。
     /// </summary>
@@ -34,18 +35,21 @@ public partial class GameApp: Singleton<GameApp>
     /// 开始游戏业务层逻辑。
     /// <remarks>显示UI、加载场景等。</remarks>
     /// </summary>
-    private void StartGameLogic()
+    private async UniTask StartGameLogic()
     {
         /* Create a window container */
         WindowContainer winContainer = WindowContainer.Create("MAIN");
         
-        IUIViewLocator locator = context.GetService<IUIViewLocator>();
-        StartupWindow window = locator.LoadWindow<StartupWindow>(winContainer, "Assets/AssetRaw/UI/UIForms/Startup/Startup.prefab");
-        window.Create();
-        ITransition transition = window.Show().OnStateChanged((w, state) =>
-        {
-            //log.DebugFormat("Window:{0} State{1}",w.Name,state);
-        });
+        await UniTask.Yield();
+
+        UIWindowType.Startup.ShowWindow();
+        // IUIViewLocator locator = context.GetService<IUIViewLocator>();
+        // StartupWindow window = locator.LoadWindow<StartupWindow>(winContainer, "Assets/AssetRaw/UI/UIForms/Startup/Startup.prefab");
+        // window.Create();
+        // ITransition transition = window.Show().OnStateChanged((w, state) =>
+        // {
+        //     //log.DebugFormat("Window:{0} State{1}",w.Name,state);
+        // });
     }
 
     /// <summary>
@@ -102,6 +106,7 @@ public partial class GameApp: Singleton<GameApp>
             logic.OnUpdate();
             TProfiler.EndSample();
         }
+
         TProfiler.EndFirstSample();
     }
 
@@ -117,6 +122,7 @@ public partial class GameApp: Singleton<GameApp>
             logic.OnFixedUpdate();
             TProfiler.EndSample();
         }
+
         TProfiler.EndFirstSample();
     }
 
@@ -132,6 +138,7 @@ public partial class GameApp: Singleton<GameApp>
             logic.OnLateUpdate();
             TProfiler.EndSample();
         }
+
         TProfiler.EndFirstSample();
     }
 

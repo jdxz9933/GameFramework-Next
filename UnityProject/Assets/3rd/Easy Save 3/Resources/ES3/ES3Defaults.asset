@@ -31,6 +31,7 @@ MonoBehaviour:
     serializationDepthLimit: 64
     assemblyNames:
     - Assembly-CSharp
+    - BestHTTP
     - CW.Common
     - EasySave3
     - GameBase
@@ -46,11 +47,13 @@ MonoBehaviour:
     - Loxodon.Framework
     - Loxodon.Framework.Binding.Weaving
     - Loxodon.Log
+    - ProtoBuf
     - UniTask
     - UniTask.Addressables
     - UniTask.DOTween
     - UniTask.Linq
     - UniTask.TextMeshPro
+    - unity.webp
     - UnityGameFramework.Runtime
     - YooAsset
     showAdvancedSettings: 0

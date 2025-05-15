@@ -19,6 +19,7 @@ namespace UGFExtensions.Await
 
         private static readonly Dictionary<string, TaskCompletionSource<bool>> s_SceneTcs =
             new Dictionary<string, TaskCompletionSource<bool>>();
+        
 
         private static readonly HashSet<int> s_WebSerialIDs = new HashSet<int>();
         private static readonly List<WebResult> s_DelayReleaseWebResult = new List<WebResult>();
