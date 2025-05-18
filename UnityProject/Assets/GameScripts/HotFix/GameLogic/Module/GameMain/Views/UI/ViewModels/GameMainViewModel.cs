@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Loxodon.Framework.Commands;
 using Loxodon.Framework.Contexts;
 using Loxodon.Framework.ViewModels;
@@ -23,8 +24,7 @@ namespace GameLogic
             TestTxt = "Test1234";
             FightContext context = new FightContext();
             Context.AddContext(nameof(FightContext), context);
-            
-            context.StartFight();
+            context.StartFight().Forget();
         }
 
         public ICommand Btn_TestCommand => _btn_TestCommand;

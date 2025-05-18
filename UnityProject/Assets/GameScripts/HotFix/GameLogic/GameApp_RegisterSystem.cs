@@ -11,6 +11,7 @@ using Loxodon.Framework.Localizations;
 using Loxodon.Framework.Messaging;
 using Loxodon.Framework.Services;
 using Loxodon.Framework.Views;
+using UGFExtensions.Await;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
@@ -27,6 +28,8 @@ public partial class GameApp
         m_ListLogicMgr = new List<ILogicSys>();
         CodeTypes.Instance.Init(s_HotfixAssembly.ToArray());
         EventInterfaceHelper.Init();
+        AwaitableExtensions.SubscribeEvent();
+
         RegisterAllSystem();
         InitSystemSetting();
 
@@ -42,8 +45,8 @@ public partial class GameApp
         bundle.Start();
 
         // INodeProxyFactoryRegister nodeFactoryRegister = container.Resolve<INodeProxyFactoryRegister>();
-         // nodeFactoryRegister.Register(new  WovenNodeProxyFactory(), 100); //优先级设置为100即可
-  
+        // nodeFactoryRegister.Register(new  WovenNodeProxyFactory(), 100); //优先级设置为100即可
+
 
         /* Initialize the ui view locator and register UIViewLocator */
         container.Register<IUIViewLocator>(new UIViewLocator());
