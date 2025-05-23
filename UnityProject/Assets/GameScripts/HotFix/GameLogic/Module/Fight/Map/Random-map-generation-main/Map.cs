@@ -254,6 +254,8 @@ public class Map : MonoBehaviour
         if (GUI.Button(new Rect(10, 50, 200, 30), "Iterate Map"))
         {
             IterationMapNew();  //可以替换这个方式试一下另一种地图演算 IterationMap
+            
+            
         }
     }
 }

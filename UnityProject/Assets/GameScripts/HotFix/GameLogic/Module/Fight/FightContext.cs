@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityGameFramework.Runtime;
 
-namespace GameLogic
+namespace GameLogic.Fight
 {
     public class FightContext : Context
     {
