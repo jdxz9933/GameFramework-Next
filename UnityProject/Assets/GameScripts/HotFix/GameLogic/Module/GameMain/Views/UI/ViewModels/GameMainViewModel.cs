@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using GameLogic.Fight;
 using Loxodon.Framework.Commands;
 using Loxodon.Framework.Contexts;
 using Loxodon.Framework.ViewModels;
